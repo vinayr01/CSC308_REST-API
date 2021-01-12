@@ -42,6 +42,13 @@ users = {
 def get_users():
     if request.method == 'GET':
         search_username = request.args.get('name') #accessing the value of parameter 'name'
+        search_job = request.args.get('job')
+        if search_username and search_job:
+            subdict = {'users_list' : []}
+            for user in users['users_list']:
+                if user['name'] == search_username and user['job'] == search_job:
+                    subdict['users_list'].append(user)
+            return subdict
         if search_username:
             subdict = {'users_list' : []}
             for user in users['users_list']:
@@ -57,11 +64,13 @@ def get_users():
         # 200 is the default code for a normal response
         return resp
 
-@app.route('/users/<id>')
+@app.route('/users/<id>', methods=['GET', 'DELETE'])
 def get_user(id):
     if id:
         for user in users['users_list']:
             if user['id'] == id:
+                if request.method == 'DELETE':
+                    users['users_list'].remove(user)
                 return user
         return ({})
     return users
