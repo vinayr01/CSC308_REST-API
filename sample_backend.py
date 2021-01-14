@@ -1,7 +1,9 @@
 from flask import Flask
 from flask import request
 from flask import jsonify
-app = Flask(__name__)
+from flask_cors import CORS
+app = Flask(__name__) 
+CORS(app)
 
 @app.route('/')
 def hello_world():
@@ -69,8 +71,11 @@ def get_user(id):
     if id:
         for user in users['users_list']:
             if user['id'] == id:
-                if request.method == 'DELETE':
+                if request.method == 'GET':
+                    return user
+                elif request.method == 'DELETE':
                     users['users_list'].remove(user)
-                return user
+                    resp = jsonify(),204
+                    return resp
         return ({})
     return users
